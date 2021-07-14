@@ -2,8 +2,8 @@ class User:
     def __init__(self):
         self.bank_id = None
         self.wallet_id = None
-        self.username = 'username'
-        self.password = 'password'
+        self.username = 'uusername'
+        self.password = 'upassword'
 
     def create_bank_account(self):
         msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
@@ -23,9 +23,13 @@ class User:
         if 'error' not in resp:
             cost = resp['cost']
             payment_id = resp['payment_id']
+            destination = resp['merchant_id']
             msg = {'method': 'delegate', 'cost': cost, 'username': self.username,
                    'pass_hash': self.password, 'bank_id': 1}
             resp = self.send_msg_to_exchange(msg)
             if 'error' not in resp:
                 transaction_id = resp['transaction_id']
+                msg = {'method': 'transfer', 'payment_id': payment_id, 'destination': destination,
+                       'transaction_id': transaction_id, 'cost': cost}
+                resp = self.send_msg_to_bank(msg)
 

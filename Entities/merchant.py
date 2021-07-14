@@ -11,12 +11,21 @@ class Merchant:
         self.prices = {'apple': 10, 'banana': 20, 'melon': 30}
         self.orders = {}
         self.last_payment_id = 0
+        self.bank_id = None
+        self.username = 'musername'
+        self.password = 'mpassword'
 
     def calculate_basket_price(self, basket):
         total = 0
         for item in basket:
             total += self.prices[item]
         return total
+
+    def create_bank_account(self):
+        msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
+        resp = self.send_msg_to_bank(msg)
+        if 'error' not in resp:
+            self.bank_id = resp['acc_id']
 
     def buy(self, msg):
         basket = msg['basket']
@@ -28,5 +37,5 @@ class Merchant:
         else:
             payment_id = self.last_payment_id = self.last_payment_id + 1
             self.orders[payment_id] = Order(basket, address, payment_id, cost)
-            response = {'payment_id': payment_id, 'cost': cost}
+            response = {'payment_id': payment_id, 'cost': cost, 'merchant_account': self.bank_id}
         return response
