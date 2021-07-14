@@ -18,7 +18,7 @@ class Merchant:
     def calculate_basket_price(self, basket):
         total = 0
         for item in basket:
-            total += self.prices[item]
+            total += self.prices[item] * basket[item]
         return total
 
     def create_bank_account(self):
