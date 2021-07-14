@@ -1,3 +1,6 @@
+from Connection.server_connection import ServerConnection
+from Connection.client_connection import send_msg
+
 
 class Bank:
     def __init__(self):
@@ -6,6 +9,16 @@ class Bank:
         self.passwords = {}
         self.balances = {}
         self.last_id = 0
+        ServerConnection(self.process_msg, 20020)
+
+    def process_msg(self, msg):
+        method = msg['method']
+        if method == 'signup':
+            return self.signup(msg)
+        elif method == 'transfer':
+            return self.transfer(msg)
+        else:
+            return {'error': 'method not implemented'}
 
     def signup(self, msg):
         initial_balance = 100

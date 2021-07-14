@@ -1,4 +1,5 @@
 import time
+from Connection.server_connection import ServerConnection
 
 
 class Delegation:
@@ -23,6 +24,18 @@ class Exchange:
         self.delegations = []
         self.last_id = 0
         self.convert_ratio = 10
+        ServerConnection(self.process_msg, 20040)
+
+    def process_msg(self, msg):
+        method = msg['method']
+        if method == 'signup':
+            return self.signup(msg)
+        elif method == 'delegate':
+            return self.delegate(msg)
+        elif method == 'use_delegation':
+            return self.use_delegation(msg)
+        else:
+            return {'error': 'method not implemented'}
 
     def signup(self, msg):
         initial_balance = 100

@@ -1,3 +1,6 @@
+from Connection.server_connection import ServerConnection
+
+
 class Order:
     def __init__(self, basket, address, payment_id, price):
         self.payment_id = payment_id
@@ -14,6 +17,14 @@ class Merchant:
         self.bank_id = None
         self.username = 'musername'
         self.password = 'mpassword'
+        ServerConnection(self.process_msg, 20030)
+
+    def process_msg(self, msg):
+        method = msg['method']
+        if method == 'buy':
+            return self.buy(msg)
+        else:
+            return {'error': 'method not implemented'}
 
     def calculate_basket_price(self, basket):
         total = 0

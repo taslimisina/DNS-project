@@ -13,7 +13,7 @@ def main():
     user.create_wallet()
     user.create_bank_account()
     merchant.create_bank_account()
-    user.buy_basket({'apple': 2})
+    print(user.buy_basket({'apple': 2}))
 
 
 if __name__ == '__main__':

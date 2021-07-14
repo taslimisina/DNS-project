@@ -3,7 +3,8 @@ import threading
 import socket
 import json
 
-class Server_Connection:
+
+class ServerConnection:
     def __init__(self, process_fnc, port):
         self.process_fnc = process_fnc
 
@@ -13,10 +14,9 @@ class Server_Connection:
 
         ssl_sock.listen(5)
 
-        self.receiveThread = threading.Thread(target = self._receive, args = (ssl_sock))
+        self.receiveThread = threading.Thread(target=self._recieve, args=(ssl_sock,))
         self.receiveThread.start()
 
-    
     def _recieve(self, sock):
         while True:
             # establish connection
@@ -25,7 +25,7 @@ class Server_Connection:
             # check if data != '' ?
             data = str(data.decode("utf-8"))
 
-            data = json.laods(data)
+            data = json.loads(data)
             reply_message = self.process_fnc(data)
             reply_message = json.dumps(reply_message)
 
