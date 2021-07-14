@@ -1,5 +1,5 @@
 from Connection.server_connection import ServerConnection
-
+from config import *
 
 class Order:
     def __init__(self, basket, address, payment_id, price):
@@ -17,7 +17,7 @@ class Merchant:
         self.bank_id = None
         self.username = 'musername'
         self.password = 'mpassword'
-        ServerConnection(self.process_msg, 20030)
+        ServerConnection(self.process_msg, merch_port)
 
     def process_msg(self, msg):
         method = msg['method']

@@ -1,6 +1,6 @@
 import time
 from Connection.server_connection import ServerConnection
-
+from config import *
 
 class Delegation:
     def __init__(self, cost, user_account, bank_id):
@@ -24,7 +24,7 @@ class Exchange:
         self.delegations = []
         self.last_id = 0
         self.convert_ratio = 10
-        ServerConnection(self.process_msg, 20040)
+        ServerConnection(self.process_msg, exchange_port)
 
     def process_msg(self, msg):
         method = msg['method']
