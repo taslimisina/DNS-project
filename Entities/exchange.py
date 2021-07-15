@@ -81,7 +81,7 @@ class Exchange:
         transaction_id = msg['transaction_id'] - 1
         if len(self.delegations) > transaction_id and self.delegations[transaction_id].is_valid() \
                 and cost == self.delegations[transaction_id].cost \
-                and cost >= self.balances[self.delegations[transaction_id].user_account]:
+                and cost <= self.balances[self.delegations[transaction_id].user_account]:
             self.balances[self.delegations[transaction_id].user_account] -= cost
             response = {}
         else:

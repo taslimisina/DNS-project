@@ -5,6 +5,7 @@ from Entities.merchant import Merchant
 from Entities.user import User
 import time
 
+
 def main():
     user = User()
     merchant = Merchant()
@@ -14,9 +15,15 @@ def main():
     user.create_wallet()
     user.create_bank_account()
     merchant.create_bank_account()
-    resp = user.buy_basket({'apple': 2})
+    resp = user.buy_basket({'apple': 10})
     print("final result")
     print(resp)
+    print("user bank account balance")
+    print(bank.balances[user.bank_id])
+    print("user wallet balance")
+    print(exchange.balances[user.wallet_id])
+    print("merchant bank balance")
+    print(bank.balances[merchant.bank_id])
 
 
 if __name__ == '__main__':
