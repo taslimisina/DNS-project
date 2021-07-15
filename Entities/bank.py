@@ -3,6 +3,7 @@ from Connection.server_connection import ServerConnection
 from Connection.client_connection import send_msg
 from config import *
 
+
 class Bank:
     def __init__(self):
         self.id = 1
@@ -13,6 +14,10 @@ class Bank:
         ServerConnection(self.process_msg, bank_port)
 
     def process_msg(self, msg):
+        """
+        calls related function based on message method
+        returns error if method not found
+        """
         method = msg['method']
         if method == 'signup':
             return self.signup(msg)
@@ -22,6 +27,10 @@ class Bank:
             return {'error': 'method not implemented'}
 
     def signup(self, msg):
+        """
+        called when signup message is received
+        returns generated account id if everything is ok else returns error
+        """
         initial_balance = 100
         username = msg['username']
         if username in self.accounts:
@@ -36,6 +45,10 @@ class Bank:
         return response
 
     def transfer(self, msg):
+        """
+        processes a transfer message tries to sell crypto and send it to merchant account
+        returns payment id if everything goes well else everything is reverted and error is returned
+        """
         payment_id = msg['payment_id']
         destination = msg['destination']
         transaction_id = msg['transaction_id']

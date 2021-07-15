@@ -10,18 +10,27 @@ class User:
         self.password = 'upassword'
 
     def create_bank_account(self):
+        """
+        tries to create a bank account and set self.bank_id to the bank id in response
+        """
         msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
         resp = send_msg(msg, bank_port)
         if 'error' not in resp:
             self.bank_id = resp['acc_id']
 
     def create_wallet(self):
+        """
+        tries to create a wallet and set self.wallet_id to the wallet id in response
+        """
         msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
         resp = send_msg(msg, exchange_port)
         if 'error' not in resp:
             self.wallet_id = resp['acc_id']
 
     def buy_basket(self, basket):
+        """
+        tries to buy given basket from merchant and returns final response
+        """
         msg = {'method': 'buy', 'basket': basket, 'address': 'Tehran'}
         resp = send_msg(msg, merch_port)
         if 'error' not in resp:

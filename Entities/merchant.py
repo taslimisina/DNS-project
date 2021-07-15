@@ -23,6 +23,10 @@ class Merchant:
         ServerConnection(self.process_msg, merch_port)
 
     def process_msg(self, msg):
+        """
+        calls related function based on message method
+        returns error if method not found
+        """
         method = msg['method']
         if method == 'buy':
             return self.buy(msg)
@@ -32,18 +36,27 @@ class Merchant:
             return {'error': 'method not implemented'}
 
     def calculate_basket_price(self, basket):
+        """
+        calculates cost of the basket
+        """
         total = 0
         for item in basket:
             total += self.prices[item] * basket[item]
         return total
 
     def create_bank_account(self):
+        """
+        tries to create a bank account and set self.bank_id to the bank id in response
+        """
         msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
         resp = send_msg(msg, bank_port)
         if 'error' not in resp:
             self.bank_id = resp['acc_id']
 
     def buy(self, msg):
+        """
+        process order message from user and returns cost, payment id, destination if everything is ok else returns error
+        """
         basket = msg['basket']
         address = msg['address']
         try:

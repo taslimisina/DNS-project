@@ -3,6 +3,7 @@ import time
 from Connection.server_connection import ServerConnection
 from config import *
 
+
 class Delegation:
     def __init__(self, cost, user_account, bank_id):
         self.cost = cost
@@ -11,6 +12,9 @@ class Delegation:
         self.timestamp = time.time()
 
     def is_valid(self):
+        """
+        checks validity of delegation (delegation deactivates after 10 seconds)
+        """
         if self.timestamp >= time.time() - 10:
             return True
         else:
@@ -28,6 +32,10 @@ class Exchange:
         ServerConnection(self.process_msg, exchange_port)
 
     def process_msg(self, msg):
+        """
+        calls related function based on message method
+        returns error if method not found
+        """
         method = msg['method']
         if method == 'signup':
             return self.signup(msg)
@@ -39,12 +47,19 @@ class Exchange:
             return {'error': 'method not implemented'}
 
     def generate_transaction_id(self):
+        """
+        generates random unique transaction id
+        """
         transaction_id = random.randint(0, 100000)
         while transaction_id in self.delegations:
             transaction_id = random.randint(0, 100000)
         return transaction_id
 
     def signup(self, msg):
+        """
+        called when signup message is received
+        returns generated account id if everything is ok else returns error
+        """
         initial_balance = 100
         username = msg['username']
         if username in self.accounts:
@@ -59,6 +74,9 @@ class Exchange:
         return response
 
     def check_pass(self, username, pass_hash):
+        """
+        returns account id if username and password correct else returns none
+        """
         if username in self.accounts:
             acc_id = self.accounts[username]
             correct_pass = self.passwords[acc_id]
@@ -70,6 +88,10 @@ class Exchange:
             return None
 
     def delegate(self, msg):
+        """
+        called when delegation message is received and add it to delegation messages if username and password correct
+        returns transaction id if everything is okay else returns error
+        """
         username = msg['username']
         pass_hash = msg['pass_hash']
         cost = msg['cost'] * self.convert_ratio
@@ -85,6 +107,10 @@ class Exchange:
         return response
 
     def use_delegation(self, msg):
+        """
+        called when message wants to use a previously received delegation.
+        checks if everything is okay does the reduction and returns ok (empty response) else returns error
+        """
         cost = msg['cost'] * self.convert_ratio
         transaction_id = msg['transaction_id']
         if transaction_id in self.delegations and self.delegations[transaction_id].is_valid() \
