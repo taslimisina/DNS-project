@@ -2,12 +2,14 @@ from Connection.server_connection import ServerConnection
 from Connection.client_connection import send_msg
 from config import *
 
+
 class Order:
     def __init__(self, basket, address, payment_id, price):
         self.payment_id = payment_id
         self.basket = basket
         self.address = address
         self.price = price
+        self.done = False
 
 
 class Merchant:
@@ -24,6 +26,8 @@ class Merchant:
         method = msg['method']
         if method == 'buy':
             return self.buy(msg)
+        elif method == 'transaction_done':
+            return {}
         else:
             return {'error': 'method not implemented'}
 

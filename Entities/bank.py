@@ -1,3 +1,4 @@
+import config
 from Connection.server_connection import ServerConnection
 from Connection.client_connection import send_msg
 from config import *
@@ -43,14 +44,14 @@ class Bank:
             response = {'error': 'destination does not exist'}
         else:
             self.balances[destination] += cost
-            msg = {'method': 'use_delegation', 'cost': 'cost', 'transaction_id': transaction_id}
-            resp = self.send_msg_to_exchange(msg)
+            msg = {'method': 'use_delegation', 'cost': cost, 'transaction_id': transaction_id}
+            resp = send_msg(msg, config.exchange_port)
             if 'error' in resp:
-                self.balances -= cost
+                self.balances[destination] -= cost
                 response = {'error': 'problem with exchange'}
             else:
                 msg = {'method': 'transaction_done', 'payment_id': payment_id}
-                self.send_msg_to_merchant(msg)
+                send_msg(msg, config.merch_port)
                 response = {'payment_id': payment_id}
         return response
 

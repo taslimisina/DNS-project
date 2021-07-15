@@ -27,7 +27,7 @@ class User:
         if 'error' not in resp:
             cost = resp['cost']
             payment_id = resp['payment_id']
-            destination = resp['merchant_id']
+            destination = resp['merchant_account']
             msg = {'method': 'delegate', 'cost': cost, 'username': self.username,
                    'pass_hash': self.password, 'bank_id': 1}
             resp = send_msg(msg, exchange_port)
