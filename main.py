@@ -1,4 +1,3 @@
-from Entities import *
 from Entities.bank import Bank
 from Entities.exchange import Exchange
 from Entities.merchant import Merchant
@@ -15,7 +14,7 @@ def main():
     user.create_wallet()
     user.create_bank_account()
     merchant.create_bank_account()
-    resp = user.buy_basket({'apple': 10})
+    resp = user.buy_basket({'apple': 1})
     print("final result")
     print(resp)
     print("user bank account balance")

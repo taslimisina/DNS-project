@@ -1,3 +1,4 @@
+import random
 import time
 from Connection.server_connection import ServerConnection
 from config import *
@@ -21,7 +22,7 @@ class Exchange:
         self.accounts = {}
         self.passwords = {}
         self.balances = {}
-        self.delegations = []
+        self.delegations = {}
         self.last_id = 0
         self.convert_ratio = 10
         ServerConnection(self.process_msg, exchange_port)
@@ -36,6 +37,12 @@ class Exchange:
             return self.use_delegation(msg)
         else:
             return {'error': 'method not implemented'}
+
+    def generate_transaction_id(self):
+        transaction_id = random.randint(0, 100000)
+        while transaction_id in self.delegations:
+            transaction_id = random.randint(0, 100000)
+        return transaction_id
 
     def signup(self, msg):
         initial_balance = 100
@@ -70,16 +77,17 @@ class Exchange:
         acc_id = self.check_pass(username, pass_hash)
         if acc_id:
             delegation = Delegation(cost, acc_id, bank_id)
-            self.delegations.append(delegation)
-            response = {'transaction_id': len(self.delegations)}
+            transaction_id = self.generate_transaction_id()
+            self.delegations[transaction_id] = delegation
+            response = {'transaction_id': transaction_id}
         else:
             response = {'error': 'username or password invalid'}
         return response
 
     def use_delegation(self, msg):
         cost = msg['cost'] * self.convert_ratio
-        transaction_id = msg['transaction_id'] - 1
-        if len(self.delegations) > transaction_id and self.delegations[transaction_id].is_valid() \
+        transaction_id = msg['transaction_id']
+        if transaction_id in self.delegations and self.delegations[transaction_id].is_valid() \
                 and cost == self.delegations[transaction_id].cost \
                 and cost <= self.balances[self.delegations[transaction_id].user_account]:
             self.balances[self.delegations[transaction_id].user_account] -= cost
