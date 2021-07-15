@@ -9,8 +9,10 @@ class ServerConnection:
         self.process_fnc = process_fnc
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        ssl_sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
-        ssl_sock.bind(('', port))
+        # ssl_context = ssl.create_default_context()
+        # ssl_sock = ssl_context.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
+        ssl_sock = sock
+        ssl_sock.bind(('127.0.0.1', port))
 
         ssl_sock.listen(5)
 
@@ -21,7 +23,9 @@ class ServerConnection:
         while True:
             # establish connection
             clientSocket, addr = sock.accept()
-            data = sock.recv(4096)
+            print('Got connection from', addr)
+            data = clientSocket.recv(4096)
+            print('got data: ', data)
             # check if data != '' ?
             data = str(data.decode("utf-8"))
 

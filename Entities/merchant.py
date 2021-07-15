@@ -1,4 +1,5 @@
 from Connection.server_connection import ServerConnection
+from Connection.client_connection import send_msg
 from config import *
 
 class Order:
@@ -34,7 +35,7 @@ class Merchant:
 
     def create_bank_account(self):
         msg = {'method': 'signup', 'username': self.username, 'pass_hash': self.password}
-        resp = self.send_msg_to_bank(msg)
+        resp = send_msg(msg, bank_port)
         if 'error' not in resp:
             self.bank_id = resp['acc_id']
 
