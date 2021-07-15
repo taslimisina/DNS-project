@@ -10,8 +10,16 @@ class ServerConnection:
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # ssl_context = ssl.create_default_context()
-        # ssl_sock = ssl_context.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1, ciphers="ADH-AES256-SHA")
-        ssl_sock = sock
+        # ssl_sock = ssl_context.wrap_socket(sock)
+        # ssl_sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLS, ciphers="ADH-AES256-SHA")
+        try:
+            key_file_path = './certificates/CA/ca_private.pem'
+            cert_file_path = './certificates/CA/ca_cert.pem'
+            ssl_sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLS, server_side=True, ciphers="TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256", keyfile=key_file_path, certfile=cert_file_path)
+        except:
+            ssl_sock = sock
+        
+        
         ssl_sock.bind(('127.0.0.1', port))
 
         ssl_sock.listen(5)
